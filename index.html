@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VantaHoney Deception Suite - Autonomous SOC Threat Defense</title>
+  <meta name="description" content="VantaHoney Deception Suite - High-tech, low-lit dark SOC layout with vector world map threat plotting, live attack feed, dynamic decoy profiles, and real-time port hit telemetry.">
+  <meta name="theme-color" content="#030712">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Chart.js for Real-Time Port Hit Telemetry -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Animated Background Canvas -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- Scanline / Vignette Layer -->
+  <div class="scanline-overlay"></div>
+
+  <!-- Main SOC Dashboard Container -->
+  <div class="soc-wrapper" id="socApp">
+
+    <!-- Top Header -->
+    <header class="soc-header">
+      <div class="brand-section">
+        <div class="brand-icon-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="m9 12 2 2 4-4"/>
+          </svg>
+          <div class="pulse-beacon"></div>
+        </div>
+        <div class="brand-text">
+          <h1>VANTAHONEY DECEPTION SUITE</h1>
+          <div class="brand-tag">AUTONOMOUS CYBER DECEPTION & HONEYNET TELEMETRY</div>
+        </div>
+      </div>
+
+      <!-- Telemetry Status Pills -->
+      <div class="header-telemetry">
+        <div class="status-pill">
+          <div class="indicator-dot"></div>
+          <span>SOC ACTIVE</span>
+        </div>
+        <div class="defcon-pill">DEFCON 3</div>
+        <div class="clock-pill" id="socUtcClock">UTC 00:00:00</div>
+      </div>
+
+      <!-- Header Quick Actions -->
+      <div class="header-actions">
+        <button class="tactical-btn" id="soundToggle" title="Toggle Tactical Audio Feedback">
+          <span>🔇 SFX: OFF</span>
+        </button>
+        <button class="tactical-btn tactical-btn-alert" id="triggerZeroDayBtn" title="Simulate a High-Priority Zero-Day Exploit Injection">
+          <span>🚨 Inject Zero-Day</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Critical Alert Banner (Triggered during Zero-Day attacks) -->
+    <div class="soc-alert-banner" id="socAlertBanner"></div>
+
+    <!-- Top Telemetry Metrics Strip -->
+    <section class="telemetry-strip">
+      <div class="telemetry-card">
+        <div class="telemetry-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/>
+          </svg>
+        </div>
+        <div class="telemetry-data">
+          <span class="telemetry-label">Attacks Intercepted</span>
+          <span class="telemetry-val" id="counterInterceptions">14,285</span>
+          <span class="telemetry-sub">▲ 18.4% this session</span>
+        </div>
+      </div>
+
+      <div class="telemetry-card">
+        <div class="telemetry-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 9 6 6"/><path d="m15 9-6 6"/>
+          </svg>
+        </div>
+        <div class="telemetry-data">
+          <span class="telemetry-label">Active Honey-Traps</span>
+          <span class="telemetry-val">42 DECOYS</span>
+          <span class="telemetry-sub">Synthetic Schemas Armed</span>
+        </div>
+      </div>
+
+      <div class="telemetry-card">
+        <div class="telemetry-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </div>
+        <div class="telemetry-data">
+          <span class="telemetry-label">Threat Actors Tracked</span>
+          <span class="telemetry-val">389 UNIQUE</span>
+          <span class="telemetry-sub">Global ASN Correlation</span>
+        </div>
+      </div>
+
+      <div class="telemetry-card">
+        <div class="telemetry-icon">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="telemetry-data">
+          <span class="telemetry-label">Deception Success Rate</span>
+          <span class="telemetry-val">99.4%</span>
+          <span class="telemetry-sub">Zero Infiltration Breaches</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Dashboard Controls: 'Change Decoy Profile' -->
+    <section class="decoy-controller-bar">
+      <div class="controller-header">
+        <div class="controller-title-group">
+          <span class="controller-label">🎯 Decoy Profile Matrix</span>
+          <span class="controller-subtitle">Dynamic honeypot persona switching reconfigures emulated daemons, listening ports & trap payloads</span>
+        </div>
+
+        <div class="controller-aux-controls">
+          <div class="control-input-group">
+            <label for="sensorSelect">Target Node:</label>
+            <select id="sensorSelect" class="soc-select">
+              <option value="fra">FRA-01 (Frankfurt EU)</option>
+              <option value="iad">IAD-02 (Ashburn US-East)</option>
+              <option value="sin">SIN-03 (Singapore AP)</option>
+              <option value="tyo">TYO-04 (Tokyo East Asia)</option>
+              <option value="gru">GRU-05 (São Paulo SA)</option>
+            </select>
+          </div>
+
+          <div class="control-input-group">
+            <label for="simSpeedSelect">Stream Pace:</label>
+            <select id="simSpeedSelect" class="soc-select">
+              <option value="2200">Relaxed (2.2s)</option>
+              <option value="1400" selected>Standard (1.4s)</option>
+              <option value="600">Blitz / Flood (0.6s)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Segmented Profile Buttons -->
+      <div class="profile-selector-tabs">
+        <button class="profile-tab active" data-profile="web">
+          <span class="profile-tab-icon">🌐</span>
+          <div class="profile-tab-text">
+            <span class="tab-title">Web Server</span>
+            <span class="tab-ports">Ports: 80, 443, 8080, 8443</span>
+          </div>
+        </button>
+
+        <button class="profile-tab" data-profile="db">
+          <span class="profile-tab-icon">🗄️</span>
+          <div class="profile-tab-text">
+            <span class="tab-title">Database Server</span>
+            <span class="tab-ports">Ports: 3306, 5432, 6379, 27017</span>
+          </div>
+        </button>
+
+        <button class="profile-tab" data-profile="bastion">
+          <span class="profile-tab-icon">🔐</span>
+          <div class="profile-tab-text">
+            <span class="tab-title">SSH / Bastion</span>
+            <span class="tab-ports">Ports: 22, 23, 2222, 3389</span>
+          </div>
+        </button>
+
+        <button class="profile-tab" data-profile="scada">
+          <span class="profile-tab-icon">🏭</span>
+          <div class="profile-tab-text">
+            <span class="tab-title">SCADA / ICS</span>
+            <span class="tab-ports">Ports: 502, 102, 20000, 47808</span>
+          </div>
+        </button>
+
+        <button class="profile-tab" data-profile="omni">
+          <span class="profile-tab-icon">🪐</span>
+          <div class="profile-tab-text">
+            <span class="tab-title">Omni HoneyNet</span>
+            <span class="tab-ports">Blended Multi-Vector Mesh</span>
+          </div>
+        </button>
+      </div>
+    </section>
+
+    <!-- Main SOC Grid: Center World Map + Bottom Graph, and Side Live Attack Feed -->
+    <main class="soc-main-grid">
+
+      <!-- Center & Telemetry Column -->
+      <div class="soc-center-col">
+
+        <!-- Center Vector World Map Panel -->
+        <section class="soc-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="panel-title">🌐 Global Threat Interception Radar</span>
+              <span class="panel-badge">BALLISTIC VECTOR TRACKING</span>
+            </div>
+            <div class="panel-badge" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">
+              TARGET SENSOR ARMED
+            </div>
+          </div>
+
+          <div class="map-viewport" id="mapContainer">
+            <canvas id="socWorldMap"></canvas>
+            <div class="map-hud-legend">
+              <div class="legend-item"><span class="legend-dot cyan"></span> Attacker IP Trajectory</div>
+              <div class="legend-item"><span class="legend-dot emerald"></span> Deceived Response</div>
+              <div class="legend-item"><span class="legend-dot amber"></span> Tarpit Throttled</div>
+              <div class="legend-item"><span class="legend-dot crimson"></span> 0-Day Exploit</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Decoy Profile Specifications & Real-Time Port Frequency Graph -->
+        <div class="bottom-telemetry-row">
+
+          <!-- Left: Active Decoy Specifications -->
+          <section class="decoy-spec-panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <span class="panel-title">🛡️ Active Decoy Persona</span>
+              </div>
+              <span class="panel-badge" id="profileBadge">ONLINE</span>
+            </div>
+
+            <div class="profile-meta-header">
+              <div class="profile-meta-title" id="profileTitle">Web Application Cluster</div>
+              <div class="profile-meta-tagline" id="profileTagline">Emulating High-Value Nginx / Apache & Microservices API Gateways</div>
+            </div>
+
+            <div class="spec-grid">
+              <div class="spec-field">
+                <span class="spec-field-label">Emulation Engine:</span>
+                <span class="spec-field-val" id="profileEngine">Nginx/1.24.0 (Ubuntu) + Node.js v20.11</span>
+              </div>
+              <div class="spec-field">
+                <span class="spec-field-label">Synthetic Service Banner:</span>
+                <span class="spec-field-val" id="profileBanner">HTTP/1.1 200 OK | Server: nginx/1.24.0</span>
+              </div>
+              <div class="spec-field">
+                <span class="spec-field-label">Active Listening Ports:</span>
+                <div class="port-pills-wrap" id="profileListeningPorts"></div>
+              </div>
+              <div class="spec-field">
+                <span class="spec-field-label">Deception Tactics Deployed:</span>
+                <ul class="tactics-list" id="profileTacticsList"></ul>
+              </div>
+            </div>
+          </section>
+
+          <!-- Right: Real-time Graph of Which Ports Are Hit the Most -->
+          <section class="chart-panel">
+            <div class="panel-header">
+              <div class="panel-title-group">
+                <span class="panel-title">📊 Real-Time Port Hit Frequency</span>
+              </div>
+              <span class="panel-badge" style="color: #00ffcc;">LIVE TELEMETRY</span>
+            </div>
+            <div class="chart-container-box">
+              <canvas id="portChartCanvas"></canvas>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- Side Column: Live Attack Feed -->
+      <aside class="soc-side-col">
+        <section class="feed-panel">
+          <div class="panel-header">
+            <div class="panel-title-group">
+              <span class="panel-title">⚡ Live Attack Feed</span>
+            </div>
+            <span class="panel-badge" style="color: #ff3366; border-color: rgba(255, 51, 102, 0.4);">LIVE STREAM</span>
+          </div>
+
+          <!-- Feed Controls and Filters -->
+          <div class="feed-controls-row">
+            <div class="filter-pills-bar">
+              <button class="filter-pill active" data-filter="ALL">ALL</button>
+              <button class="filter-pill" data-filter="DROPPED">DROPPED</button>
+              <button class="filter-pill" data-filter="DECEIVED">DECEIVED</button>
+              <button class="filter-pill" data-filter="TARPIT">TARPIT</button>
+              <button class="filter-pill" data-filter="QUARANTINED">QUARANTINED</button>
+              <button class="filter-pill" data-filter="0-DAY TRAPPED">0-DAY</button>
+            </div>
+
+            <div class="feed-aux-actions">
+              <button class="tiny-btn" id="pauseFeedBtn">⏸ Pause</button>
+              <button class="tiny-btn" id="clearFeedBtn">Clear</button>
+              <button class="tiny-btn" id="exportFeedBtn">Export</button>
+            </div>
+          </div>
+
+          <!-- Scrolling Feed Stream -->
+          <div class="attack-feed-stream" id="liveAttackFeed">
+            <!-- Dynamic entries injected by app.js -->
+          </div>
+        </section>
+      </aside>
+
+    </main>
+
+    <!-- Deep Packet Inspection Modal -->
+    <div class="soc-modal-overlay" id="packetModal">
+      <div class="modal-content-card">
+        <div class="modal-header">
+          <h3 id="modalTitle">🔍 DEEP PACKET FORENSIC INSPECTION</h3>
+          <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+        </div>
+        <div class="modal-grid">
+          <div class="modal-field">
+            <span class="modal-lbl">Incident ID:</span>
+            <span class="modal-val" id="modalAtkId">-</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-lbl">Timestamp:</span>
+            <span class="modal-val" id="modalTimestamp">-</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-lbl">Attacker IP:</span>
+            <span class="modal-val" id="modalIp">-</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-lbl">Target Port:</span>
+            <span class="modal-val" id="modalPort">-</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-lbl">Origin Network / ASN:</span>
+            <span class="modal-val" id="modalAsn">-</span>
+          </div>
+          <div class="modal-field">
+            <span class="modal-lbl">Threat Actor Affinity:</span>
+            <span class="modal-val" id="modalActor">-</span>
+          </div>
+          <div class="modal-field" style="grid-column: span 2;">
+            <span class="modal-lbl">Deception Action:</span>
+            <span class="modal-val" id="modalAction">-</span>
+          </div>
+        </div>
+        <div class="modal-raw-box">
+          <span class="modal-lbl">Captured Payload Signature:</span>
+          <pre id="modalPayload">-</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOC Footer -->
+    <footer class="soc-footer">
+      <div class="footer-credits">
+        <div class="made-by-text">
+          Made with <span class="heart-glow">❤️</span> by Pranav Aitha
+        </div>
+        <div class="footer-subtitle">
+          VantaHoney Deception Suite &bull; Autonomous Next-Gen SOC Threat Emulation
+        </div>
+      </div>
+
+      <!-- Social Media Links with Glowing Cyber Effects -->
+      <div class="footer-social-links">
+        <a href="https://x.com/PRANAV_AITHA" target="_blank" rel="noopener noreferrer" class="social-link social-x" title="Follow Pranav Aitha on X / Twitter">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+          <span>@PRANAV_AITHA</span>
+        </a>
+
+        <a href="https://github.com/pranav-aitha" target="_blank" rel="noopener noreferrer" class="social-link social-github" title="Pranav Aitha on GitHub">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+          </svg>
+          <span>GitHub</span>
+        </a>
+
+        <a href="https://instagram.com/pranav_aitha" target="_blank" rel="noopener noreferrer" class="social-link social-instagram" title="Pranav Aitha on Instagram">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+          <span>@pranav_aitha</span>
+        </a>
+      </div>
+
+      <!-- Live telemetry status indicator -->
+      <div class="footer-status-strip">
+        <span><span class="dot-green"></span> Engine: v3.4.1-DECEPT</span>
+        <span>Telemetry Ping: 12ms</span>
+        <span>Sensor Mesh: 5 Clusters Active</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/world-geo.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/map.js"></script>
+  <script src="js/chart.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
